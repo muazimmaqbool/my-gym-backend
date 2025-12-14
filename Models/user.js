@@ -29,10 +29,10 @@ const userSchema = mongoose.Schema({
     required: true,
     select: false, // security
   },
-  phone: { type: String },
+  phone: { type: Number, required: true },
   role: { type: String, enum: ["owner", "staff"], required: true },
   isActive: { type: Boolean, default: true },
 });
 
-const User=mongoose.model("User",userSchema);
-module.exports=User
+const User = mongoose.model("User", userSchema);
+module.exports = User;
