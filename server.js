@@ -3,13 +3,16 @@ const cors=require("cors")
 const app=express()
 const db=require("./db")
 const bodyParser=require("body-parser")
+
+//loading enviroment variables from .env file
 require("dotenv").config()
 
-//for now enabling all requests
+// Enable CORS for all incoming requests (for now)
 app.use(cors())
 
 //here it will convert the json string/data to js object and save it inside: req.body
 app.use(bodyParser.json())
+//if body parser is not used then use this: app.use(express.json())
 
 const PORT=process.env.PORT || 3000
 
