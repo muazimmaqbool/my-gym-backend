@@ -1,6 +1,8 @@
 const express=require("express")
 const cors=require("cors")
 const app=express()
+// importing db file to establish MongoDB connection
+// the connection runs automatically when this file is loaded
 const db=require("./db")
 const bodyParser=require("body-parser")
 
