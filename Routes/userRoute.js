@@ -4,7 +4,7 @@ const router = express.Router();
 
 //getting user model schema
 const User = require("../Models/user");
-const { generateToken } = require("../jwt");
+const { generateToken, jwtAuthMiddleware } = require("../jwt");
 
 //saving data of user
 //use likt this: http://localhost:3000/user/signup or url/user/signup
@@ -51,5 +51,19 @@ router.post("/login", async (req, res) => {
 });
 
 //getting user profile
+router.get("/profile",jwtAuthMiddleware,async(req,res)=>{
+  try{
+    const userData=req.userData; //contains payload data of jwt token
+    //console.log("userData:",userData)
+    const userId=userData.id
+    //getting user details by user id
+    const user=await User.findById(userId)
+    res.status(200).json({user})
+
+  }catch (error) {
+    console.log("Error while saving user data:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+})
 
 module.exports = router;

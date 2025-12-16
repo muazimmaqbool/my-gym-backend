@@ -17,7 +17,7 @@ const jwtAuthMiddleware=(req,res,next)=>{
         const decodedPayload=jwt.verify(token,process.env.JWT_SECRET_KEY)
 
         //returning the decoded payload
-        req.user=decodedPayload // req.payload=decode or req.user=decoded or req.endcoded etc
+        req.userData=decodedPayload // req.payload=decode or req.user=decoded or req.endcoded etc
         next()
     } catch (error) {
         console.log(`Error in jwtAuthMiddleware: ${error}`)
