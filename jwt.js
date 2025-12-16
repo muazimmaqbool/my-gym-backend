@@ -24,3 +24,11 @@ const jwtAuthMiddleware=(req,res,next)=>{
         res.status(401),json({error:"Invalid Token"})
     }
 }
+
+//generating jwt token:
+//token needs payload i.e userData that's why it takes parameter as user data or anyname
+const generateToken=(payloadData)=>{
+    //Token with expiry in 8h i.e 30000/60=500 minutes then 500/60 = 8.33 hours
+    return jwt.sign(payloadData,process.env.JWT_SECRET_KEY,{expiresIn:30000})
+}
+module.exports={jwtAuthMiddleware,generateToken}
