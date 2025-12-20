@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const bycrypt = require("bcrypt");
+const bcrypt = require("bcrypt");
 
 const userSchema = mongoose.Schema({
   name: {
@@ -36,29 +36,40 @@ const userSchema = mongoose.Schema({
 });
 
 //hashing the password of the user before saving it to the db
-userSchema.pre("save", async (next) => {
+//here normal function is used and not arrow function because: arrow functions do NOT have their own this, so this is undefined, so const user=this; will then show isModified is not function error
+
+//un newer Mongoose versions, when you use an async middleware: Mongoose does NOT pass next anymore
+userSchema.pre('save', async function(){
   const user = this; //basically 'this' here is the existing record/schema of the user
   //first we will check is password being updated or not because it will be running on ever save, so if user is only updating name,address etc
   //in that case we won't hash password again if it has not being changed
-  if (!user.isModified("password")) return next();
+  if(!user.isModified("password")) return;
   try {
     //generating hash password
 
      //1: generating salt (here genSalt(10) means 10 round salt, generates random string)
-     const salt=await bycrypt.genSalt(10); // we can also do this: const salt="this is a salt"; but not secure at all
+     const salt=await bcrypt.genSalt(10)// we can also do this: const salt="this is a salt"; but not secure at all
      //console.log("salt:",salt) // $2b$10$UjvORRbdKDQVh3aXB3f6wO
 
      //2: hashing password
-     const hashedPassword=await bycrypt.hash(user.password,salt)
+     const hashedPassword=await bcrypt.hash(user.password,salt)
 
      //3: overrides the plan password with the hashed one
-     user.password=hashedPassword;
+     user.password=hashedPassword
 
-     next(); //means we have done processing now you can save in db/do further tasks
+      //means we have done processing now you can save in db/do further tasks
   } catch (err) {
-    return next(err);
+    return console.log("error while hashing password:",err);
   }
 });
+/*
+Simple Rule (remember this):
+| Middleware Style   | Use `next`? |
+| ------------------ | ----------- |
+| `async function()` | ❌ NO        |
+| `function(next)`   | ✅ YES       |
+
+*/
 
 const User = mongoose.model("User", userSchema);
 module.exports = User;
