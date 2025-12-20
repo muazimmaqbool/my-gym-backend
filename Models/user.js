@@ -73,7 +73,7 @@ Simple Rule (remember this):
 //method comparePassword used to compare password entered by the user with the hashed password in db
 userSchema.methods.comparePassword = async function (userPassword) {
   try {
-    console.log("userPassword:",userPassword)
+    // console.log("userPassword:",userPassword)
         //using bycrypt to compare provided password with hashed password
     const isMatch = await bcrypt.compare(userPassword, this.password);
     return isMatch;

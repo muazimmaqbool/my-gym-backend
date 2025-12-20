@@ -91,10 +91,10 @@ router.put("/:userID", jwtAuthMiddleware, async (req, res) => {
 router.put("/profile/password",jwtAuthMiddleware,async(req,res)=>{
   try{
     const userData = req.userData; //contains payload data of jwt token
-    console.log("userData:",userData)
+    //console.log("userData:",userData)
     const{currentPassword,newPassword}=req.body;
-    console.log("currentPassword:",currentPassword)
-    console.log("newPassword:",newPassword)
+    // console.log("currentPassword:",currentPassword)
+    // console.log("newPassword:",newPassword)
 
     const id=userData?.id
     const user=await User.findById(id)
