@@ -35,7 +35,7 @@ router.post("/login", async (req, res) => {
     if (!user || !(await user.comparePassword(password))) {
       return res.status(401).json("Invalid email or password");
     }
-    
+
     // console.log("user found:", user);
     //payload for jwt token
     const jwtPayload = {
@@ -86,4 +86,29 @@ router.put("/:userID", jwtAuthMiddleware, async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
+
+//route for updating password
+router.put("/profile/password",jwtAuthMiddleware,async(req,res)=>{
+  try{
+    const userData = req.userData; //contains payload data of jwt token
+    console.log("userData:",userData)
+    const{currentPassword,newPassword}=req.body;
+    console.log("currentPassword:",currentPassword)
+    console.log("newPassword:",newPassword)
+
+    const id=userData?.id
+    const user=await User.findById(id)
+
+    if(!(await user.comparePassword(currentPassword))){
+      return res.status(401).json({ error: "Invalid current password!" });
+    }
+
+    //updating password
+    user.password=newPassword;
+    await user.save()
+    res.status(200).json({ message: "Password updated" });
+  }catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+})
 module.exports = router;
