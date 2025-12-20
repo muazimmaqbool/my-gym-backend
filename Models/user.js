@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const bycrypt = require("bcrypt");
 
 const userSchema = mongoose.Schema({
   name: {
@@ -33,6 +34,11 @@ const userSchema = mongoose.Schema({
   role: { type: String, enum: ["owner", "staff"], required: true },
   isActive: { type: Boolean, default: true },
 });
+
+//hashing the password of the user before saving it to the db
+userSchema.pre('save',async(next)=>{
+
+})
 
 const User = mongoose.model("User", userSchema);
 module.exports = User;
