@@ -31,10 +31,11 @@ router.post("/login", async (req, res) => {
     //getting the user by email
     const user = await User.findOne({ email: email });
     //if user is not found or either email or password is wrong
-    //? write checking/compare password logic later
-    if (!user) {
+
+    if (!user || !(await user.comparePassword(password))) {
       return res.status(401).json("Invalid email or password");
     }
+    
     // console.log("user found:", user);
     //payload for jwt token
     const jwtPayload = {

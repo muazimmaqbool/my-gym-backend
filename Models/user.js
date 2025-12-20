@@ -28,7 +28,7 @@ const userSchema = mongoose.Schema({
   password: {
     type: String,
     required: true,
-    select: false, // security
+    //select: false, // security , commenting this because otherwise it throws error while comparing password
   },
   phone: { type: Number, required: true },
   role: { type: String, enum: ["owner", "staff"], required: true },
@@ -73,6 +73,8 @@ Simple Rule (remember this):
 //method comparePassword used to compare password entered by the user with the hashed password in db
 userSchema.methods.comparePassword = async function (userPassword) {
   try {
+    console.log("userPassword:",userPassword)
+        //using bycrypt to compare provided password with hashed password
     const isMatch = await bcrypt.compare(userPassword, this.password);
     return isMatch;
   } catch (error) {
