@@ -51,19 +51,38 @@ router.post("/login", async (req, res) => {
 });
 
 //getting user profile
-router.get("/profile",jwtAuthMiddleware,async(req,res)=>{
-  try{
-    const userData=req.userData; //contains payload data of jwt token
+router.get("/profile", jwtAuthMiddleware, async (req, res) => {
+  try {
+    const userData = req.userData; //contains payload data of jwt token
     //console.log("userData:",userData)
-    const userId=userData.id
+    const userId = userData.id;
     //getting user details by user id
-    const user=await User.findById(userId)
-    res.status(200).json({user})
-
-  }catch (error) {
+    const user = await User.findById(userId);
+    res.status(200).json({ user });
+  } catch (error) {
     console.log("Error while saving user data:", error);
     res.status(500).json({ error: "Internal server error" });
   }
-})
+});
 
+//route to update the profile
+router.put("/:userID", jwtAuthMiddleware, async (req, res) => {
+  try {
+    //getting the user id from paramters/query
+    const userID = req.params.userID;
+    //getting data to update which is passed via request body
+    const updatedData = req.body;
+    //saving data
+    const response = await User.findByIdAndUpdate(userID, updatedData, {
+      new: true, //returns updated data
+      runValidators: true,
+    });
+    if(!response){
+      return res.status(403).json({error:"User not found!"})
+    }
+    res.status(200).json({message:"updated profile successfully"})
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
 module.exports = router;
