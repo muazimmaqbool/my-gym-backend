@@ -2,10 +2,10 @@ const express = require("express");
 const router = express.Router();
 
 const Member = require("../Models/member");
-const { jwtAuthMiddleWare } = require("../jwt");
+const { jwtAuthMiddleware } = require("../jwt");
 
 //adding the member
-router.post("/register", jwtAuthMiddleWare, async (res, res) => {
+router.post("/register", jwtAuthMiddleware, async (req, res) => {
   try {
     const data = req.body;
     const newMember = new Member(data);
@@ -16,4 +16,4 @@ router.post("/register", jwtAuthMiddleWare, async (res, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
-module.exports=router;
+module.exports = router;

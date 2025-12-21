@@ -20,9 +20,11 @@ const PORT=process.env.PORT || 3000
 
 //importing router files
 const userRoute=require("./Routes/userRoute")
+const memberRoute=require("./Routes/memberRoute")
 
 //using routes
 app.use("/user",userRoute)
+app.use("/member",memberRoute)
 
 //just for testing: http://localhost:3000/
 app.get("/",(req,res)=>{
