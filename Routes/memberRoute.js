@@ -37,6 +37,10 @@ router.get("/all",jwtAuthMiddleware,async(req,res)=>{
         //searching by name
         if(search){
             query.name={$regex: search, $options: "i"}
+            /*
+            -> $regex: enables partial text search
+            -> $options: "i" → case-insensitive
+            */
         }
         //filter by payment status
         if(paymentStatus){
