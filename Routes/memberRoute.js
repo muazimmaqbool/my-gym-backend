@@ -104,4 +104,23 @@ router.delete(`/:memberId`, jwtAuthMiddleware, async (req, res) => {
   }
 });
 
+//updating data of the memeber
+router.put("/:memberId", jwtAuthMiddleware, async (req, res) => {
+  try {
+    const memberId = req.params.memberId;
+    const updatedData = req.body;
+    const response = await Member.findByIdAndUpdate(memberId, updatedData, {
+      new: true,
+      runValidators: true,
+    });
+     if (!response) {
+      return res.status(403).json({ error: "Member not found" });
+    }
+    res.status(200).json({message:"Member updated"});
+  } catch (error) {
+    console.log("Error while updating member data:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 module.exports = router;
