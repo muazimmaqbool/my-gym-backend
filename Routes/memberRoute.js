@@ -113,11 +113,27 @@ router.put("/:memberId", jwtAuthMiddleware, async (req, res) => {
       new: true,
       runValidators: true,
     });
-     if (!response) {
+    if (!response) {
       return res.status(403).json({ error: "Member not found" });
     }
-    res.status(200).json({message:"Member updated"});
+    res.status(200).json({ message: "Member updated" });
   } catch (error) {
+    console.log("Error while updating member data:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+//get member by id
+router.get("/:memberId", jwtAuthMiddleware, async (req, res) => {
+  try {
+    const memberId = req.params.memberId;
+    const memberFound=await Member.findById(memberId);
+     if (!memberFound) {
+      return res.status(403).json({ error: "Member not found" });
+    }
+    res.status(200).json({ memberFound});
+  } 
+  catch (error) {
     console.log("Error while updating member data:", error);
     res.status(500).json({ error: "Internal server error" });
   }
