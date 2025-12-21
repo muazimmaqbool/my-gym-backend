@@ -127,16 +127,70 @@ router.put("/:memberId", jwtAuthMiddleware, async (req, res) => {
 router.get("/:memberId", jwtAuthMiddleware, async (req, res) => {
   try {
     const memberId = req.params.memberId;
-    const memberFound=await Member.findById(memberId);
-     if (!memberFound) {
+    const memberFound = await Member.findById(memberId);
+    if (!memberFound) {
       return res.status(403).json({ error: "Member not found" });
     }
-    res.status(200).json({ memberFound});
-  } 
-  catch (error) {
+    res.status(200).json({ memberFound });
+  } catch (error) {
     console.log("Error while updating member data:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 });
+
+//patch request:
+router.patch("/:memberId", jwtAuthMiddleware, async (req, res) => {
+  try {
+    const memberId = req.params.memberId;
+    const allowedUpdates = [
+      "paymentStatus",
+      "membershipType",
+      "membershipStartDate",
+      "membershipEndDate",
+      "fees",
+      "isActive",
+    ];
+    const updates = {};
+    allowedUpdates.forEach((field) => {
+      if (req.body[field] !== undefined) {
+        updates[field] = req.body[field];
+      }
+    });
+    if (Object.keys(updates).length === 0) {
+      return res
+        .status(400)
+        .json({ message: "No valid fields provided for update" });
+    }
+    const updatedMember = await Member.findByIdAndUpdate(
+      memberId,
+      { $set: updates },
+      { new: true, runValidators: true }
+    );
+    if (!updatedMember) {
+      return res.status(404).json({ message: "Member not found" });
+    }
+    res.status(200).json({
+      message: "Member updated successfully",
+      data: updatedMember,
+    });
+  } catch (error) {
+    console.log("Error while updating member data:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+/*
+the request body should be like this:
+{
+  "paymentStatus": "paid"
+}
+  or
+  {
+  "membershipType": "yearly",
+  "membershipStartDate": "2025-01-01",
+  "membershipEndDate": "2025-12-31",
+  "fees": 12000
+}
+  ...
+*/
 
 module.exports = router;
