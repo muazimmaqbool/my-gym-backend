@@ -11,7 +11,7 @@ const jwtAuthMiddleware=(req,res,next)=>{
     if(!token){
         res.status(401).json({error:'Unauthorized'})
     }
-    //if token is available
+    //if token is available and valid
     try{
         //verifying the jwt token and it will return decoded payload
         const decodedPayload=jwt.verify(token,process.env.JWT_SECRET_KEY)
